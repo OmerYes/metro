@@ -1,0 +1,51 @@
+﻿@using MetroSMS.Data.Model.ORM.Entity
+
+@*@Page UICulture="tr" Culture="tr-TR"*@
+@using GridMvc.Html
+
+@model List<MetroSMS.Web.UI.Models.VM.UserPhotoVM>
+
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/Layout.cshtml";
+}
+
+<div class="container-fluid">
+
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Kullanıcı Resim Detayı</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Eklenen Resim</th>
+                            <th>Eklenme Tarihi</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><img width="100" height="100" alt="Image" src='~//Content/userphotos/@item.Path' /></td>
+                                <td>@item.AddDate.ToString("0:d MMMM yyyy hh:mm")</td>
+                                <td><a href="~//Content/userphotos/@item.Path" download>İndir</a></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+              
+            </div>
+        </div>
+    </div>
+
+</div>
+
+

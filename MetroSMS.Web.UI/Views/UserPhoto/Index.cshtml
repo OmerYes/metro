@@ -1,0 +1,185 @@
+﻿@model UserPhotoVM
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Metro</title>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.MultiFile.min.js"></script>
+    <script src="~/Scripts/modernizr-2.8.3.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link href="~/css/reset.css?v=1.1" rel="stylesheet" />
+    <link href="~/css/metro.css?v=1.1" rel="stylesheet" />
+    <link rel="shortcut icon" type="image/png" href="~/Content/metro-apple-touch-icon-57x57.png" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        .content {
+            margin-top: 25%;
+        }
+
+        .content-top {
+            font-weight:bold;
+            font-size:1.1rem;
+            line-height:1.9rem;
+        }
+
+        .content-menu {
+            font-family: 'Roboto', sans-serif;
+            color:black;            
+        }
+        #content-menu{
+            line-height: 1.6rem;
+        }
+
+        hr {
+            border: 2px solid #002D72;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="logo"><img src="~/img/logo.svg" /></div>
+
+        <div class="content">
+            <div style="text-align:center">
+                @if (ViewBag.IslemDurum == 1)
+                {
+                    <p style="color:red;font-size:larger">Menüleriniz başarıyla yüklenmiştir</p>
+                    <hr />
+                }
+                else if (ViewBag.IslemDurum == 0)
+                {
+                    @Html.ValidationSummary()
+                    <hr />
+                }
+            </div>
+            @if (ViewBag.IslemDurum != 1)
+            {
+                <div style="padding:5%" class="content-top">
+                    <p>Yapılan araştırmalara göre müşterilerin %90'ı web sitesinde menü fotoğrafı olan işletmeleri tercih etmektedir.</p>
+                </div>
+                <div>
+                    <hr />
+                    <div class="content-menu" style="padding:5%" id="content-menu">
+                        <p>Menünüzü web sitenize eklemek için aşağıdaki adımları izleyiniz </p>
+                        <p>1.Fotoğraf çek butonu ile menünüzün fotosunu çekiniz.</p>
+                        <p>2.Fotoğrafın net ve okunur olduğuna emin olun.</p>
+                        <p>3.Göndere Tıklayın.</p>
+                    </div>
+                    <hr />
+                </div>
+            }
+
+
+        </div>
+
+        <div class="footer">
+
+            @using (Html.BeginForm("Index", "UserPhoto", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+            {
+
+
+                @Html.HiddenFor(q => q.PhoneNumber)
+
+                <div class="form-group row  galeri" id="image-container">
+                </div>
+                <div class="form-group fotobtn" id="hidden-container">
+                    <div class="col " id="hidden-input-0">
+                        <div class="custom-file">
+                            <input type="file" accept="image/*" class="custom-file-input" style="display:none" id="file1" name="file" capture="capture">
+
+                        </div>
+                    </div>
+                </div>
+                
+                @Html.Partial("~/Views/Shared/Partial/Message.cshtml")    
+                 /*buton eklendi*/
+                @*<button type="button" id="FotoCek" class="camimg"><img src="~/img/cam.svg" alt="Alternate Text" /></button>*@
+                <button type="button" class="foto-cek fotobtn" id="FotoCek" style="font-size:25px">FOTOĞRAF ÇEK</button>                              
+                <button type="submit" class="gonder" style="font-size:30px;height: 42%">GÖNDER</button>
+            }
+
+
+
+        </div>
+        <div class="back"></div>
+    </div>
+
+
+</body>
+</html>
+<script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+
+
+
+<script>
+
+    var counter = 0;
+    var index = 1;
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+
+                
+                var file = e.target
+
+                $("#image-container").append('<div class="gallery foto1" id="div-input-' + counter + '">' +
+                    '<img style="height:100%;width:100%" class="imageThumb" src="' + e.target.result + '" title="' + file.name + '"/>' +
+                    '<span class="remove" data-id="' + counter + '">' +
+                    '<img src="/img/cop.svg"/></span></div>')
+
+
+                $("#hidden-input-" + counter).hide();
+                counter++;
+                $("#hidden-container").append('<div class="col" id="hidden-input-' + counter + '"><div class="custom-file"><input type="file" accept="image/*" style="display:none" class="custom-file-input" id="file' + index + '" name="file" capture="capture" ></div> </div>')
+
+                //Sil butonuna tıklandığında tetiklenen kod
+                $(".remove").click(function () {
+                    var id = $(this).data("id")
+
+                    swal({
+                        title: "Menü fotoğrafını silmek istediğinize emin misiniz?",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                        .then((willDelete) => {
+
+                            if (willDelete) {
+                                $("#hidden-input-" + id).remove()
+                                $("#div-input-" + id).remove()
+
+                            }
+
+                        });
+                });
+
+
+            }
+            reader.readAsDataURL(input.files[0]);
+
+        }
+    }
+
+    $(document).on('click', '#FotoCek', function () {
+        var element = $("#file" + index);
+        var result = $(".custom-file").children().is(element);
+        if (!result) {
+            index--;
+        }
+        $(".content").fadeOut();
+        $("#file" + index).trigger("click");
+        index++
+    });
+
+    $(document).on("change", 'input[type="file"]', function (e) {
+        readURL(this);
+    })
+
+</script>
+
+

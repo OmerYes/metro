@@ -1,0 +1,32 @@
+﻿
+
+@if ((string)TempData["IslemDurum"] == "Success")
+{
+    <div class="alert alert-success">
+        <h2>İşleminiz Başarılı Şekilde Gerçekleştirilmiştir.</h2>
+    </div>
+}
+
+
+@if (ViewBag.ResimDurum == "ResimDurum")
+{
+    <div class="alert alert-danger">
+        lütfen Resim çekiniz....
+    </div>
+}
+
+@if (ViewBag.ResimUzanti == "ResimUzanti")
+{
+    <div class="alert alert-danger">
+        Logo jpeg, png uzantılı eklenebilir. Lütfen değiştiriniz!
+    </div>
+}
+@if (ViewBag.ResimBoyutu == "ResimBoyutu")
+{
+    <div class="alert alert-danger">
+        Logo 7MB boyutunu geçemez
+    </div>
+}
+
+
+

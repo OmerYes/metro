@@ -1,0 +1,58 @@
+﻿@model List<UserPhotoVM>
+
+@using GridMvc.Html
+@{
+    ViewBag.Title = "ImgList";
+    Layout = "~/Areas/Admin/Views/Shared/Layout.cshtml";
+}
+
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Resim Listesi</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                @Html.Grid(Model).Columns(columns =>
+{
+columns.Add(c => c.PhoneNumber).Titled("Telefon");
+               columns.Add(c => c.RestourantName).Titled("Ad");
+               columns.Add(c => c.WebSiteName).Titled("Site Adı");
+columns.Add(c => c.AddDate).Format("{0:d MMMM yyyy hh:mm}").Titled("Eklenme Tarihi");
+columns.Add().Encoded(false).Sanitized(false).Titled("Eklenen Resim").Filterable(false).RenderValueAs(c => @<div><img width="40px" , height="40px" alt="Image" src='~/Content/userphotos/@c.Path' /></div>);
+columns.Add().Encoded(false).Sanitized(false).Titled("İndir").Filterable(false).RenderValueAs(c => @<div><button class="btn btn-success" onclick="dosyaindir(@c.UserID)">İndir</button></div>);
+
+}).WithPaging(10).Sortable(true)
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    function dosyaindir(id) {
+        var data = new Object();
+        data.ID = id;
+        $.ajax({
+            url: "/Table/GetUserPhotos/",
+            type: "POST",
+            data: data,
+            success: function (result) {
+
+                $.each(result, function (key, value) {
+                    var anchor = document.createElement('a');
+                    anchor.href = "https://menu.metro-tr.com" + "/Content/UserPhotos/" + value.Path;
+                    anchor.target = "_blank"
+                    anchor.download = value.Path;
+                    anchor.click();
+                })
+
+            }
+        })
+
+
+    }
+</script>
+
